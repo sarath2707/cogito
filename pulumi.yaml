@@ -1,0 +1,31 @@
+# This file defines the Pulumi stack that deploys a container to AWS.
+
+stack: default
+
+providers:
+  aws:
+    default: us-east-1
+
+resources:
+  # Create an ECS cluster
+  cluster:
+    type: aws.ecs.Cluster
+    name: cogito-cluster
+
+  # Create an ECS service
+  service:
+    type: aws.ecs.Service
+    name: cogito-service
+    desired_count: 1
+    cluster: cluster.arn
+    task_definition:
+      type: aws.ecs.TaskDefinition
+      name: cogito-task-definition
+      container_definitions:
+      - name: cogito-container
+        image: cogito-docker-image
+
+outputs:
+  # The ARN of the ECS service
+  service_arn: service.arn
+
